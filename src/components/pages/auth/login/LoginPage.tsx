@@ -1,0 +1,94 @@
+import { Animated, Text, TextInput, View } from 'react-native'
+import { InteractivePressable } from '../../../ui/InteractivePressable'
+import { SocialAuthButtons } from '../shared/SocialAuthButtons'
+import { authSharedStyles } from '../shared/auth-shared.styles'
+import { loginPageStyles } from './login-page.styles'
+
+type LoginPageProps = {
+  onBack: () => void
+  onGoToRegister: () => void
+  progress: Animated.Value
+}
+
+export function LoginPage({ onBack, onGoToRegister, progress }: LoginPageProps) {
+  const animatedBlockStyle = (index: number) => ({
+    opacity: progress.interpolate({
+      inputRange: [0.1 + index * 0.12, 0.32 + index * 0.12],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    }),
+    transform: [
+      {
+        translateY: progress.interpolate({
+          inputRange: [0.1 + index * 0.12, 0.32 + index * 0.12],
+          outputRange: [18, 0],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  })
+
+  return (
+    <View style={loginPageStyles.content}>
+      <Animated.View style={animatedBlockStyle(0)}>
+        <InteractivePressable onPress={onBack} style={authSharedStyles.backButton}>
+          <Text style={authSharedStyles.backButtonText}>Wróć</Text>
+        </InteractivePressable>
+
+        <Text style={authSharedStyles.title}>Zaloguj się</Text>
+        <Text style={authSharedStyles.subtitle}>
+          Wróć do swoich historii i kontynuuj wspólne chwile.
+        </Text>
+      </Animated.View>
+
+      <Animated.View style={animatedBlockStyle(1)}>
+        <SocialAuthButtons />
+      </Animated.View>
+
+      <Animated.View style={animatedBlockStyle(2)}>
+        <View style={authSharedStyles.separatorRow}>
+          <View style={authSharedStyles.separatorLine} />
+          <Text style={authSharedStyles.separatorText}>lub e-mailem</Text>
+          <View style={authSharedStyles.separatorLine} />
+        </View>
+      </Animated.View>
+
+      <Animated.View style={[authSharedStyles.form, animatedBlockStyle(3)]}>
+        <View style={authSharedStyles.inputGroup}>
+          <Text style={authSharedStyles.inputLabel}>E-mail</Text>
+          <TextInput
+            autoCapitalize="none"
+            keyboardType="email-address"
+            placeholder="twoj@email.com"
+            placeholderTextColor="#9aa0af"
+            style={authSharedStyles.input}
+          />
+        </View>
+
+        <View style={authSharedStyles.inputGroup}>
+          <Text style={authSharedStyles.inputLabel}>Hasło</Text>
+          <TextInput
+            placeholder="Wpisz hasło"
+            placeholderTextColor="#9aa0af"
+            secureTextEntry
+            style={authSharedStyles.input}
+          />
+        </View>
+
+        <InteractivePressable style={authSharedStyles.primaryButton}>
+          <Text style={authSharedStyles.primaryButtonText}>Zaloguj się</Text>
+        </InteractivePressable>
+      </Animated.View>
+
+      <Animated.View style={[authSharedStyles.footerRow, animatedBlockStyle(4)]}>
+        <Text style={authSharedStyles.footerText}>Nie masz jeszcze konta?</Text>
+        <InteractivePressable
+          onPress={onGoToRegister}
+          style={authSharedStyles.footerLinkButton}
+        >
+          <Text style={authSharedStyles.footerLinkText}>Załóż konto</Text>
+        </InteractivePressable>
+      </Animated.View>
+    </View>
+  )
+}
